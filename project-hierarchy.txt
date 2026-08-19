@@ -1,0 +1,28 @@
+UtsavamServerTs
+├─ .env
+├─ .env.example
+├─ .gitignore
+├─ package-lock.json
+├─ package.json
+├─ src
+│  ├─ app.ts
+│  ├─ config
+│  │  ├─ env.ts
+│  │  └─ swagger.ts
+│  ├─ constants
+│  ├─ controllers
+│  ├─ logs
+│  ├─ middleware
+│  ├─ models
+│  ├─ repositories
+│  ├─ routes
+│  ├─ schema
+│  ├─ server.ts
+│  ├─ services
+│  ├─ types
+│  ├─ utils
+│  └─ validators
+├─ tests
+│  ├─ integration
+│  └─ unit
+└─ tsconfig.json
