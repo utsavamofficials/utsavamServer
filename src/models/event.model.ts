@@ -11,7 +11,7 @@ export interface IEvent extends Document {
   donationUpiQrCode2?: string;
   startDate: Date;
   endDate: Date;
-  referenceBy?: Types.ObjectId;
+  referenceBy?: string;
   isActive: boolean;
   isDeleted: boolean;
   deletedAt: Date | null;
@@ -29,7 +29,7 @@ const eventSchema = new Schema<IEvent>(
     donationUpiQrCode2: { type: String },
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
-    referenceBy: { type: Schema.Types.ObjectId, ref: 'User' },
+    referenceBy: { type: String, ref: 'User' },
     ...commonFields,
   },
   { timestamps: true },
