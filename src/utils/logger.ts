@@ -1,5 +1,5 @@
 import winston from 'winston';
-import { env, isProduction } from '../config/env';
+import { env } from '../config/env';
 
 // Fields that must never reach a log line, even inside nested metadata.
 const SENSITIVE_KEYS = new Set([
@@ -32,13 +32,11 @@ const redactFormat = winston.format((info) => {
 });
 
 export const logger = winston.createLogger({
-  level: env.logLevel || 'info',
+  level: env?.logLevel || 'info',
   format: winston.format.combine(
     winston.format.timestamp(),
     redactFormat(),
-    isProduction
-      ? winston.format.json() // Clean JSON output for Vercel production logs
-      : winston.format.combine(winston.format.colorize(), winston.format.simple()) // Human-readable local development logs
+    winston.format.json() // Safe for both local dev & Vercel production
   ),
   transports: [
     new winston.transports.Console(),
