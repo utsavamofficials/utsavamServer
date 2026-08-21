@@ -1,4 +1,5 @@
 import { ActorType, Role } from '../constants/roles';
+import { Types } from 'mongoose';
 
 /**
  * Shape of the JWT payload. Deliberately minimal — never place password
@@ -26,5 +27,7 @@ export interface LoginResult {
     actorType: ActorType;
     fullName: string;
     role?: Role;
+    seasonId?: Types.ObjectId;
+    eventId?: Types.ObjectId;
   };
 }
