@@ -11,7 +11,7 @@ export const createEventSchema = {
     donationUpiQrCode2: Joi.string().uri().optional(),
     startDate: Joi.date().iso().required(),
     endDate: Joi.date().iso().required(),
-    referenceBy: objectId.optional(),
+    referenceBy: Joi.string().optional(),
   }),
 };
 
@@ -25,7 +25,7 @@ export const updateEventSchema = {
     donationUpiQrCode2: Joi.string().uri().optional(),
     startDate: Joi.date().iso().optional(),
     endDate: Joi.date().iso().optional(),
-    referenceBy: objectId.optional(),
+    referenceBy: Joi.string().optional(),
   }).min(1),
 };
 
