@@ -1,5 +1,8 @@
+import path from 'path';
 import winston from 'winston';
 import { env, isProduction } from '../config/env';
+
+const LOGS_DIR = path.join(__dirname, '..', 'logs');
 
 // Fields that must never reach a log line, even inside nested metadata.
 const SENSITIVE_KEYS = new Set([
@@ -32,15 +35,22 @@ const redactFormat = winston.format((info) => {
 });
 
 export const logger = winston.createLogger({
-  level: env.logLevel || 'info',
+  level: env.logLevel,
   format: winston.format.combine(
     winston.format.timestamp(),
     redactFormat(),
-    isProduction
-      ? winston.format.json() // Clean JSON output for Vercel production logs
-      : winston.format.combine(winston.format.colorize(), winston.format.simple()) // Human-readable local development logs
+    winston.format.json(),
   ),
   transports: [
-    new winston.transports.Console(),
+    new winston.transports.File({ filename: path.join(LOGS_DIR, 'error.log'), level: 'error' }),
+    new winston.transports.File({ filename: path.join(LOGS_DIR, 'combined.log') }),
   ],
 });
+
+if (!isProduction) {
+  logger.add(
+    new winston.transports.Console({
+      format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
+    }),
+  );
+}
