@@ -25,7 +25,7 @@ const donorSchema = new Schema<IDonor>(
     eventId: { type: Schema.Types.ObjectId, ref: 'Event', required: true },
     collectionExecutiveId: { type: Schema.Types.ObjectId, ref: 'CollectionExecutive', required: true },
     donorName: { type: String, required: true, trim: true },
-    contactNumber: { type: String, required: true, trim: true },
+    contactNumber: { type: String, trim: true },
     email: { type: String, trim: true, lowercase: true },
     panNumber: { type: String, trim: true, uppercase: true },
     age: { type: Number },
