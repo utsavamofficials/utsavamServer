@@ -6,6 +6,8 @@ import { generateReferenceNumber } from '../utils/referenceGenerator';
 import { excludeSoftDeleted, ParsedPagination } from '../utils/queryBuilder';
 import { IDonation } from '../models/donation.model';
 import { DonationPaymentMode, DonationStatus } from '../constants/enums';
+import { eventRepository } from '../repositories/event.repository';
+import { eventOrganizerRepository } from '../repositories/eventOrganizer.repository';
 
 export interface CreateDonationInput {
   donorId: string;
@@ -89,9 +91,22 @@ export const donationService = {
     const donor = donation.donorId
       ? await donorRepository.findById(donation.donorId.toString())
       : null;
+    const event = donation.eventId
+      ? await eventRepository.findById(donation.eventId.toString())
+      : null;
+
+    const eventOrganizer = event?.id
+      ? await eventOrganizerRepository.findOne({ eventId: event?.id.toString() })
+      : null;
+
     return {
       donation,
-      donor,
+      event,
+      donorName: donor?.donorName || null,
+      donorMail: donor?.email || null,
+      eventName: event?.eventName || null,
+      organizingMandalName: event?.organizingMandalName || null,
+      eventOrganizer,
     };
   },
 
