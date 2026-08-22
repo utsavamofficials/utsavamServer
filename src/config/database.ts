@@ -23,14 +23,11 @@ export async function connectDatabase(): Promise<void> {
     logger.warn('MongoDB disconnected');
   });
 
-  console.log(env.mongodbUri)
-
   await mongoose.connect(env.mongodbUri, {
     serverSelectionTimeoutMS: 10000,
   });
 
   logger.info('MongoDB connection established successfully');
-  console.log('MongoDB connection established successfully');
 }
 
 export async function disconnectDatabase(): Promise<void> {

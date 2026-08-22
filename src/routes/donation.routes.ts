@@ -12,6 +12,7 @@ import {
   receiptNumberParamSchema,
   updateDonationSchema,
   updateDonationStatusSchema,
+  donationFilterSchema,
 } from '../validators/donation.validator';
 
 export const donationRouter = Router();
@@ -116,4 +117,12 @@ donationRouter.patch(
   requireActorType(ActorType.COLLECTION_EXECUTIVE, ActorType.USER),
   validate(updateDonationStatusSchema),
   donationController.updateStatus,
+);
+
+
+
+donationRouter.get(
+  '/filter',
+  validate(donationFilterSchema),
+  donationController.filter,
 );

@@ -54,3 +54,13 @@ export const receiptNumberParamSchema = {
 export const donationEventIdParamSchema = {
   params: Joi.object({ eventId: objectId.required() }),
 };
+
+
+export const donationFilterSchema = {
+  query: Joi.object({
+    ...paginationQuerySchema,
+    seasonId: objectId.optional(),
+    eventId: objectId.optional(),
+    collectionExecutiveId: objectId.optional(),
+  }),
+};

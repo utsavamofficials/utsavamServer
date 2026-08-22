@@ -61,22 +61,22 @@ export const donationService = {
     });
   },
 
-  async list(pagination: ParsedPagination, filters: DonationFilters) {
-    const filter: Record<string, unknown> = { ...excludeSoftDeleted<IDonation>() };
-    if (filters.seasonId) filter.seasonId = filters.seasonId;
-    if (filters.eventId) filter.eventId = filters.eventId;
-    if (filters.collectionExecutiveId) filter.collectionExecutiveId = filters.collectionExecutiveId;
-    if (filters.paymentMode) filter.paymentMode = filters.paymentMode;
-    if (filters.donationStatus) filter.donationStatus = filters.donationStatus;
-    if (filters.receiptNumber) filter.receiptNumber = filters.receiptNumber;
-    if (filters.startDate || filters.endDate) {
-      const range: Record<string, Date> = {};
-      if (filters.startDate) range.$gte = new Date(filters.startDate);
-      if (filters.endDate) range.$lte = new Date(filters.endDate);
-      filter.createdAt = range;
-    }
-    return donationRepository.findMany(filter, pagination);
-  },
+  // async list(pagination: ParsedPagination, filters: DonationFilters) {
+  //   const filter: Record<string, unknown> = { ...excludeSoftDeleted<IDonation>() };
+  //   if (filters.seasonId) filter.seasonId = filters.seasonId;
+  //   if (filters.eventId) filter.eventId = filters.eventId;
+  //   if (filters.collectionExecutiveId) filter.collectionExecutiveId = filters.collectionExecutiveId;
+  //   if (filters.paymentMode) filter.paymentMode = filters.paymentMode;
+  //   if (filters.donationStatus) filter.donationStatus = filters.donationStatus;
+  //   if (filters.receiptNumber) filter.receiptNumber = filters.receiptNumber;
+  //   if (filters.startDate || filters.endDate) {
+  //     const range: Record<string, Date> = {};
+  //     if (filters.startDate) range.$gte = new Date(filters.startDate);
+  //     if (filters.endDate) range.$lte = new Date(filters.endDate);
+  //     filter.createdAt = range;
+  //   }
+  //   return donationRepository.findMany(filter, pagination);
+  // },
 
   async getById(id: string): Promise<IDonation> {
     const donation = await donationRepository.findById(id);
@@ -88,6 +88,10 @@ export const donationService = {
     if (!donation) {
       throw ApiError.notFound('Donation not found');
     }
+    const donationAmount= donation?.donationAmount
+        ? Number(donation?.donationAmount.toString())
+        : 0
+
     const donor = donation.donorId
       ? await donorRepository.findById(donation.donorId.toString())
       : null;
@@ -107,6 +111,7 @@ export const donationService = {
       eventName: event?.eventName || null,
       organizingMandalName: event?.organizingMandalName || null,
       eventOrganizer,
+      donationAmount,
     };
   },
 
@@ -138,5 +143,60 @@ export const donationService = {
 
   async getEventSummary(eventId: string) {
     return donationRepository.getEventSummary(eventId);
+  },
+
+
+
+  async list(pagination: ParsedPagination, filters: DonationFilters) {
+    const filter: Record<string, unknown> = {
+      ...excludeSoftDeleted<IDonation>(),
+    };
+
+    // Filter by Season
+    if (filters.seasonId) {
+      filter.seasonId = filters.seasonId;
+    }
+
+    // Filter by Event
+    if (filters.eventId) {
+      filter.eventId = filters.eventId;
+    }
+
+    // Filter by Collection Executive
+    if (filters.collectionExecutiveId) {
+      filter.collectionExecutiveId = filters.collectionExecutiveId;
+    }
+
+    // Filter by Payment Mode
+    if (filters.paymentMode) {
+      filter.paymentMode = filters.paymentMode;
+    }
+
+    // Filter by Donation Status
+    if (filters.donationStatus) {
+      filter.donationStatus = filters.donationStatus;
+    }
+
+    // Filter by Receipt Number
+    if (filters.receiptNumber) {
+      filter.receiptNumber = filters.receiptNumber;
+    }
+
+    // Filter by Created Date
+    if (filters.startDate || filters.endDate) {
+      const range: Record<string, Date> = {};
+
+      if (filters.startDate) {
+        range.$gte = new Date(`${filters.startDate}T00:00:00.000Z`);
+      }
+
+      if (filters.endDate) {
+        range.$lte = new Date(`${filters.endDate}T23:59:59.999Z`);
+      }
+
+      filter.createdAt = range;
+    }
+
+    return donationRepository.findMany(filter, pagination);
   },
 };

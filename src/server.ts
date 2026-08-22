@@ -7,14 +7,14 @@ import { logger } from './utils/logger';
 let server: ReturnType<typeof app.listen>;
 
 async function bootstrap(): Promise<void> {
-  console.log("upto here")
+  // console.log("upto here")
   await connectDatabase();
-  await seedSuperAdmin();  
+  await seedSuperAdmin();
 
   server = app.listen(env.port, () => {
     logger.info(`Utsavam API listening on port ${env.port} [${env.nodeEnv}]`);
     logger.info(`Swagger docs available at http://localhost:${env.port}/api-docs`);
-    
+
     console.log(`Utsavam API listening on port ${env.port} [${env.nodeEnv}]`);
     console.log(`Swagger docs available at http://localhost:${env.port}/api-docs`);
   });

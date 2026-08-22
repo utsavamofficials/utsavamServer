@@ -1,8 +1,8 @@
-import { Request, Response } from 'express';
-import { asyncHandler } from '../utils/asyncHandler';
-import { ApiResponse } from '../utils/ApiResponse';
-import { parsePagination } from '../utils/queryBuilder';
-import { donationService } from '../services/donation.service';
+import { Request, Response } from "express";
+import { asyncHandler } from "../utils/asyncHandler";
+import { ApiResponse } from "../utils/ApiResponse";
+import { parsePagination } from "../utils/queryBuilder";
+import { donationService } from "../services/donation.service";
 
 export const donationController = {
   create: asyncHandler(async (req: Request, res: Response) => {
@@ -15,7 +15,8 @@ export const donationController = {
     const { records, meta } = await donationService.list(pagination, {
       seasonId: req.query.seasonId as string | undefined,
       eventId: req.query.eventId as string | undefined,
-      collectionExecutiveId: req.query.collectionExecutiveId as string | undefined,
+      collectionExecutiveId: req.query.collectionExecutiveId as
+        string | undefined,
       paymentMode: req.query.paymentMode as never,
       donationStatus: req.query.donationStatus as never,
       startDate: req.query.startDate as string | undefined,
@@ -30,22 +31,44 @@ export const donationController = {
   }),
 
   getByReceiptNumber: asyncHandler(async (req: Request, res: Response) => {
-    const donation = await donationService.getByReceiptNumber(req.params.receiptNumber as string);
+    const donation = await donationService.getByReceiptNumber(
+      req.params.receiptNumber as string,
+    );
     ApiResponse.success(res, donation);
   }),
 
   update: asyncHandler(async (req: Request, res: Response) => {
-    const donation = await donationService.update(req.params.id as string, req.body);
-    ApiResponse.success(res, donation, 'Donation updated successfully');
+    const donation = await donationService.update(
+      req.params.id as string,
+      req.body,
+    );
+    ApiResponse.success(res, donation, "Donation updated successfully");
   }),
 
   updateStatus: asyncHandler(async (req: Request, res: Response) => {
-    const donation = await donationService.updateStatus(req.params.id as string, req.body.donationStatus);
-    ApiResponse.success(res, donation, 'Donation status updated successfully');
+    const donation = await donationService.updateStatus(
+      req.params.id as string,
+      req.body.donationStatus,
+    );
+    ApiResponse.success(res, donation, "Donation status updated successfully");
   }),
 
   eventSummary: asyncHandler(async (req: Request, res: Response) => {
-    const summary = await donationService.getEventSummary(req.params.eventId as string);
+    const summary = await donationService.getEventSummary(
+      req.params.eventId as string,
+    );
     ApiResponse.success(res, summary);
+  }),
+
+  filter: asyncHandler(async (req: Request, res: Response) => {
+    const pagination = parsePagination(req.query);
+
+    const { records, meta } = await donationService.list(pagination, {
+      seasonId: req.query.seasonId as string | undefined,
+      eventId: req.query.eventId as string | undefined,
+      collectionExecutiveId: req.query.collectionExecutiveId as string | undefined,
+    });
+
+    ApiResponse.paginated(res, records, meta);
   }),
 };
