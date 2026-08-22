@@ -93,6 +93,8 @@ async function loginAsCollectionExecutive(
       id: executive._id.toString(),
       actorType: ActorType.COLLECTION_EXECUTIVE,
       fullName: executive.fullName,
+      seasonId: executive.seasonId,
+      eventId: executive.eventId,
     },
   };
 }
