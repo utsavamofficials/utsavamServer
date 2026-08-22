@@ -90,8 +90,7 @@ export const donationService = {
       ? await donorRepository.findById(donation.donorId.toString())
       : null;
     return {
-      ...donation,
-      donorName: donor?.donorName ?? null,
+      donation,
       donor,
     };
   },
