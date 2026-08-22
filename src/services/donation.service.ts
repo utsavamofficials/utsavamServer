@@ -81,11 +81,19 @@ export const donationService = {
     if (!donation) throw ApiError.notFound('Donation not found');
     return donation;
   },
-
-  async getByReceiptNumber(receiptNumber: string): Promise<IDonation> {
+  async getByReceiptNumber(receiptNumber: string): Promise<any> {
     const donation = await donationRepository.findByReceiptNumber(receiptNumber);
-    if (!donation) throw ApiError.notFound('Donation not found');
-    return donation;
+    if (!donation) {
+      throw ApiError.notFound('Donation not found');
+    }
+    const donor = donation.donorId
+      ? await donorRepository.findById(donation.donorId.toString())
+      : null;
+    return {
+      ...donation,
+      donorName: donor?.donorName ?? null,
+      donor,
+    };
   },
 
   async update(
