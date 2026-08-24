@@ -45,6 +45,43 @@ donationRouter.post(
 );
 donationRouter.get('/', validate(listDonationSchema), donationController.list);
 
+
+
+/**
+ * @openapi
+ * /donations/filter:
+ *   get:
+ *     summary: Filter donations
+ *     tags: [Donations]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: seasonId
+ *         schema:
+ *           type: string
+ *           pattern: '^[0-9a-fA-F]{24}$'
+ *       - in: query
+ *         name: eventId
+ *         schema:
+ *           type: string
+ *           pattern: '^[0-9a-fA-F]{24}$'
+ *       - in: query
+ *         name: collectionExecutiveId
+ *         schema:
+ *           type: string
+ *           pattern: '^[0-9a-fA-F]{24}$'
+ *     responses:
+ *       200:
+ *         description: Donations filtered successfully
+ */
+donationRouter.get(
+  '/filter',
+  validate(donationFilterSchema),
+  donationController.filter,
+);
+
+
 /**
  * @openapi
  * /donations/receipt/{receiptNumber}:
@@ -117,12 +154,4 @@ donationRouter.patch(
   requireActorType(ActorType.COLLECTION_EXECUTIVE, ActorType.USER),
   validate(updateDonationStatusSchema),
   donationController.updateStatus,
-);
-
-
-
-donationRouter.get(
-  '/filter',
-  validate(donationFilterSchema),
-  donationController.filter,
 );

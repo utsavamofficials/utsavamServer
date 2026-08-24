@@ -19,6 +19,15 @@ export const userController = {
     ApiResponse.paginated(res, records, meta);
   }),
 
+  platformList: asyncHandler(async (req: Request, res: Response) => {
+    const pagination = parsePagination(req.query);
+    const { records, meta } = await userService.platformList(pagination, {
+      role: req.query.role as never,
+      search: req.query.search as string | undefined,
+    });
+    ApiResponse.paginated(res, records, meta);
+  }),
+
   getById: asyncHandler(async (req: Request, res: Response) => {
     const user = await userService.getById(req.params.id as string);
     ApiResponse.success(res, user);

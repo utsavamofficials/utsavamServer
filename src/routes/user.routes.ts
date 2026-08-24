@@ -36,6 +36,7 @@ userRouter.use(requireAuth, requireRole(Role.SUPER_ADMIN));
  */
 userRouter.post('/', validate(createUserSchema), userController.create);
 userRouter.get('/', validate(listUserSchema), userController.list);
+userRouter.get('/platform', validate(listUserSchema), userController.platformList);
 
 /**
  * @openapi

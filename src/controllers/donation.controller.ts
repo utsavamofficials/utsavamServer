@@ -63,7 +63,7 @@ export const donationController = {
   filter: asyncHandler(async (req: Request, res: Response) => {
     const pagination = parsePagination(req.query);
 
-    const { records, meta } = await donationService.list(pagination, {
+    const { records, meta } = await donationService.filter(pagination, {
       seasonId: req.query.seasonId as string | undefined,
       eventId: req.query.eventId as string | undefined,
       collectionExecutiveId: req.query.collectionExecutiveId as string | undefined,
