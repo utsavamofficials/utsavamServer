@@ -16,7 +16,7 @@ const app: Application = express();
 app.use(helmet());
 app.use(
   cors({
-    origin: ['https://utsavamlive.in', 'http://localhost:5100', 'http://10.61.149.38:5100', '*'],
+    origin: ['https://utsavamlive.in', 'http://localhost:5100', 'http://10.61.149.38:5100', 'https://utsavam-portal.netlify.app'],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
