@@ -20,6 +20,10 @@ class CollectionExecutiveRepository extends BaseRepository<ICollectionExecutive>
       isDeleted: false,
     }).exec();
   }
+
+  async countByOrganizer(eventOrganizerId: string) {
+    return CollectionExecutiveModel.countDocuments({ eventOrganizerId, isDeleted: false }).exec();
+  }
 }
 
 export const collectionExecutiveRepository = new CollectionExecutiveRepository();

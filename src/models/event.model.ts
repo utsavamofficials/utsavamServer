@@ -4,6 +4,7 @@ import { commonFields, applySoftDeleteFilter } from '../schema/commonFields.sche
 export interface IEvent extends Document {
   _id: Types.ObjectId;
   seasonId: Types.ObjectId;
+  eventOrganizerId: Types.ObjectId;
   eventName: string;
   organizingMandalName?: string;
   description?: string;
@@ -22,6 +23,7 @@ export interface IEvent extends Document {
 const eventSchema = new Schema<IEvent>(
   {
     seasonId: { type: Schema.Types.ObjectId, ref: 'Season', required: true },
+    eventOrganizerId: { type: Schema.Types.ObjectId, ref: 'eventOrganizer', required: true },
     eventName: { type: String, required: true, trim: true },
     organizingMandalName: { type: String, trim: true },
     description: { type: String, trim: true },
@@ -36,6 +38,7 @@ const eventSchema = new Schema<IEvent>(
 );
 
 eventSchema.index({ seasonId: 1 });
+eventSchema.index({ eventOrganizerId: 1 });
 
 applySoftDeleteFilter(eventSchema);
 

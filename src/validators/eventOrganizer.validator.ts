@@ -4,7 +4,6 @@ import { genderSchema, idParamSchema, objectId, paginationQuerySchema, phoneSche
 export const createEventOrganizerSchema = {
   body: Joi.object({
     seasonId: objectId.required(),
-    eventId: objectId.required(),
     fullName: Joi.string().required(),
     username: Joi.string().alphanum().min(3).max(30).required(),
     password: Joi.string().min(8).required(),
@@ -15,6 +14,8 @@ export const createEventOrganizerSchema = {
     gender: genderSchema.optional(),
     permanentAddress: Joi.string().allow('').optional(),
     currentAddress: Joi.string().allow('').optional(),
+    eventLimit: Joi.number().integer().min(1).required(),
+    collectionExecutiveLimit: Joi.number().integer().min(1).required(),
   }),
 };
 
@@ -29,6 +30,8 @@ export const updateEventOrganizerSchema = {
     gender: genderSchema.optional(),
     permanentAddress: Joi.string().allow('').optional(),
     currentAddress: Joi.string().allow('').optional(),
+    eventLimit: Joi.number().integer().min(1).required(),
+    collectionExecutiveLimit: Joi.number().integer().min(1).required(),
   }).min(1),
 };
 

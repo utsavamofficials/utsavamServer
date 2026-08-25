@@ -77,8 +77,8 @@ export const eventService = {
   },
 
   /** Used by dependent modules (organizers, expenses, etc.) to verify eventId belongs to seasonId. */
-  async assertBelongsToSeason(eventId: string, seasonId: string): Promise<IEvent> {
-    const event = await eventRepository.findByIdAndSeason(eventId, seasonId);
+  async assertBelongsToSeason(seasonId: string): Promise<IEvent> {
+    const event = await eventRepository.findBySeasonId(seasonId);
     if (!event) throw ApiError.badRequest('Event does not belong to the specified season');
     return event;
   },

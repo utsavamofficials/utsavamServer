@@ -12,8 +12,8 @@ class EventOrganizerRepository extends BaseRepository<IEventOrganizer> {
       .exec();
   }
 
-  async findByIdWithinEvent(id: string, eventId: string, seasonId: string) {
-    return EventOrganizerModel.findOne({ _id: id, eventId, seasonId, isDeleted: false }).exec();
+  async findByIdWithinEvent(id: string, seasonId: string) {
+    return EventOrganizerModel.findOne({ _id: id, seasonId, isDeleted: false }).exec();
   }
 }
 

@@ -53,7 +53,7 @@ async function loginAsEventOrganizer(
     id: organizer._id.toString(),
     actorType: ActorType.EVENT_ORGANIZER,
     seasonId: organizer.seasonId.toString(),
-    eventId: organizer.eventId.toString(),
+    eventOrganizerId: organizer._id.toString(), // used downstream instead of eventId
   };
   return {
     accessToken: signAccessToken(payload),
@@ -63,7 +63,7 @@ async function loginAsEventOrganizer(
       actorType: ActorType.EVENT_ORGANIZER,
       fullName: organizer.fullName,
       seasonId: organizer.seasonId,
-      eventId: organizer.eventId
+      eventOrganizerId: organizer.id
     },
   };
 }

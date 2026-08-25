@@ -1,26 +1,25 @@
-import { Router } from 'express';
-import { eventController } from '../controllers/event.controller';
-import { requireAuth } from '../middleware/auth.middleware';
-import { requireRole } from '../middleware/authorization.middleware';
-import { validate } from '../middleware/validation.middleware';
-import { Role } from '../constants/roles';
+import { Router } from "express";
+import { eventController } from "../controllers/event.controller";
+import { requireAuth } from "../middleware/auth.middleware";
+import { requireActorType, requireRole } from "../middleware/authorization.middleware";
+import { validate } from "../middleware/validation.middleware";
+import { ActorType, Role } from "../constants/roles";
 import {
   createEventSchema,
   eventIdParamSchema,
   listEventSchema,
   setEventStatusSchema,
   updateEventSchema,
-} from '../validators/event.validator';
+} from "../validators/event.validator";
 
 export const eventRouter = Router();
-
 eventRouter.use(requireAuth);
 
 /**
  * @openapi
  * /events:
  *   post:
- *     summary: Create an event (festival)
+ *     summary: Create an event (festival) — Event Organizer only
  *     tags: [Events]
  *     security: [{ bearerAuth: [] }]
  *     responses:
@@ -35,12 +34,12 @@ eventRouter.use(requireAuth);
  *         description: Paginated list of events
  */
 eventRouter.post(
-  '/',
-  requireRole(Role.SUPER_ADMIN, Role.AFFILIATE),
+  "/",
+  requireActorType(ActorType.EVENT_ORGANIZER),
   validate(createEventSchema),
   eventController.create,
 );
-eventRouter.get('/', validate(listEventSchema), eventController.list);
+eventRouter.get("/", validate(listEventSchema), eventController.list);
 
 /**
  * @openapi
@@ -53,7 +52,7 @@ eventRouter.get('/', validate(listEventSchema), eventController.list);
  *       200:
  *         description: Event found
  *   patch:
- *     summary: Update an event
+ *     summary: Update an event — Event Organizer only
  *     tags: [Events]
  *     security: [{ bearerAuth: [] }]
  *     responses:
@@ -67,15 +66,15 @@ eventRouter.get('/', validate(listEventSchema), eventController.list);
  *       200:
  *         description: Event deleted
  */
-eventRouter.get('/:id', validate(eventIdParamSchema), eventController.getById);
+eventRouter.get("/:id", validate(eventIdParamSchema), eventController.getById);
 eventRouter.patch(
-  '/:id',
-  requireRole(Role.SUPER_ADMIN, Role.AFFILIATE),
+  "/:id",
+  requireActorType(ActorType.EVENT_ORGANIZER),
   validate(updateEventSchema),
   eventController.update,
 );
 eventRouter.delete(
-  '/:id',
+  "/:id",
   requireRole(Role.SUPER_ADMIN),
   validate(eventIdParamSchema),
   eventController.softDelete,
@@ -93,7 +92,7 @@ eventRouter.delete(
  *         description: Event status updated
  */
 eventRouter.patch(
-  '/:id/status',
+  "/:id/status",
   requireRole(Role.SUPER_ADMIN),
   validate(setEventStatusSchema),
   eventController.setStatus,

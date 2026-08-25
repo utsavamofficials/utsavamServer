@@ -29,5 +29,6 @@ export interface LoginResult {
     role?: Role;
     seasonId?: Types.ObjectId;
     eventId?: Types.ObjectId;
+    eventOrganizerId?: Types.ObjectId;
   };
 }

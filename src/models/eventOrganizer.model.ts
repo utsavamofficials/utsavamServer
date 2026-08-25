@@ -5,7 +5,6 @@ import { Gender } from '../constants/roles';
 export interface IEventOrganizer extends Document {
   _id: Types.ObjectId;
   seasonId: Types.ObjectId;
-  eventId: Types.ObjectId;
   fullName: string;
   username: string;
   passwordHash: string;
@@ -16,6 +15,8 @@ export interface IEventOrganizer extends Document {
   gender?: Gender;
   permanentAddress?: string;
   currentAddress?: string;
+  eventLimit: number;
+  collectionExecutiveLimit: number;
   isActive: boolean;
   isDeleted: boolean;
   deletedAt: Date | null;
@@ -26,7 +27,6 @@ export interface IEventOrganizer extends Document {
 const eventOrganizerSchema = new Schema<IEventOrganizer>(
   {
     seasonId: { type: Schema.Types.ObjectId, ref: 'Season', required: true },
-    eventId: { type: Schema.Types.ObjectId, ref: 'Event', required: true },
     fullName: { type: String, required: true, trim: true },
     username: { type: String, required: true, unique: true, trim: true, lowercase: true },
     passwordHash: { type: String, required: true, select: false },
@@ -37,6 +37,8 @@ const eventOrganizerSchema = new Schema<IEventOrganizer>(
     gender: { type: String, enum: Object.values(Gender) },
     permanentAddress: { type: String, trim: true },
     currentAddress: { type: String, trim: true },
+    eventLimit: { type: Number, required: true, default: 1 },
+    collectionExecutiveLimit: { type: Number, required: true, default: 5 },
     ...commonFields,
   },
   { timestamps: true },

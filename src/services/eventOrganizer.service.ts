@@ -5,10 +5,10 @@ import { hashPassword } from '../utils/password';
 import { excludeSoftDeleted, ParsedPagination } from '../utils/queryBuilder';
 import { IEventOrganizer } from '../models/eventOrganizer.model';
 import { Gender } from '../constants/roles';
+import { eventRepository } from '../repositories/event.repository';
 
 export interface CreateEventOrganizerInput {
   seasonId: string;
-  eventId: string;
   fullName: string;
   username: string;
   password: string;
@@ -22,13 +22,13 @@ export interface CreateEventOrganizerInput {
 }
 
 export type UpdateEventOrganizerInput = Partial<
-  Omit<CreateEventOrganizerInput, 'seasonId' | 'eventId' | 'username' | 'password'>
+  Omit<CreateEventOrganizerInput, 'seasonId' | 'username' | 'password'>
 >;
 
 export const eventOrganizerService = {
   async create(input: CreateEventOrganizerInput): Promise<IEventOrganizer> {
     // Verify the hierarchy: the event must actually belong to the given season.
-    await eventService.assertBelongsToSeason(input.eventId, input.seasonId);
+    await eventService.assertBelongsToSeason(input.seasonId);
 
     const existing = await eventOrganizerRepository.findByUsernameWithPassword(input.username);
     if (existing) throw ApiError.conflict('Username already in use');
@@ -41,10 +41,9 @@ export const eventOrganizerService = {
     });
   },
 
-  async list(pagination: ParsedPagination, filters: { seasonId?: string; eventId?: string; search?: string }) {
+  async list(pagination: ParsedPagination, filters: { seasonId?: string; search?: string }) {
     const filter: Record<string, unknown> = { ...excludeSoftDeleted<IEventOrganizer>() };
     if (filters.seasonId) filter.seasonId = filters.seasonId;
-    if (filters.eventId) filter.eventId = filters.eventId;
     if (filters.search) {
       filter.$or = [
         { fullName: { $regex: filters.search, $options: 'i' } },
@@ -78,9 +77,18 @@ export const eventOrganizerService = {
   },
 
   /** Used by collectionExecutive.service to verify the organizer truly owns this event/season. */
-  async assertBelongsToEvent(organizerId: string, eventId: string, seasonId: string): Promise<IEventOrganizer> {
-    const organizer = await eventOrganizerRepository.findByIdWithinEvent(organizerId, eventId, seasonId);
+  async assertBelongsToEvent(organizerId: string, seasonId: string): Promise<IEventOrganizer> {
+    const organizer = await eventOrganizerRepository.findByIdWithinEvent(organizerId, seasonId);
     if (!organizer) throw ApiError.badRequest('Event organizer does not belong to the specified event/season');
     return organizer;
   },
+
+  async assertOwnsEvent(organizerId: string, eventId: string): Promise<IEventOrganizer> {
+    const organizer = await this.getById(organizerId);
+    const event = await eventRepository.findById(eventId);
+    if (!event || event.eventOrganizerId.toString() !== organizerId) {
+      throw ApiError.badRequest('Event does not belong to this organizer');
+    }
+    return organizer;
+  }
 };
