@@ -55,7 +55,7 @@ export const eventOrganizerService = {
 
   async getById(id: string): Promise<IEventOrganizer> {
     const organizer = await eventOrganizerRepository.findById(id);
-    if (!organizer) throw ApiError.notFound('Event organizer not found');
+    if (!organizer) throw ApiError.notFound('Event organizer not found ' + id);
     return organizer;
   },
 

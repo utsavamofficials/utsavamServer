@@ -4,8 +4,9 @@ import { commonFields, applySoftDeleteFilter } from '../schema/commonFields.sche
 export interface IExpenseCategory extends Document {
   _id: Types.ObjectId;
   seasonId: Types.ObjectId;
-  eventId: Types.ObjectId;
+  eventOrganizerId: Types.ObjectId;
   categoryName: string;
+  description?: string;
   allocatedBudget?: Schema.Types.Decimal128;
   isActive: boolean;
   isDeleted: boolean;
@@ -17,8 +18,9 @@ export interface IExpenseCategory extends Document {
 const expenseCategorySchema = new Schema<IExpenseCategory>(
   {
     seasonId: { type: Schema.Types.ObjectId, ref: 'Season', required: true },
-    eventId: { type: Schema.Types.ObjectId, ref: 'Event', required: true },
+    eventOrganizerId: { type: Schema.Types.ObjectId, ref: 'EventOrganizer', required: true },
     categoryName: { type: String, required: true, trim: true },
+    description: { type: String, trim: true },
     allocatedBudget: { type: Schema.Types.Decimal128 },
     ...commonFields,
   },

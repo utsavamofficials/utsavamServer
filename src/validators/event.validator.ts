@@ -4,6 +4,7 @@ import { idParamSchema, objectId, paginationQuerySchema } from './common.validat
 export const createEventSchema = {
   body: Joi.object({
     seasonId: objectId.required(),
+    eventOrganizerId: objectId.required(),
     eventName: Joi.string().required(),
     organizingMandalName: Joi.string().allow('').optional(),
     description: Joi.string().allow('').optional(),

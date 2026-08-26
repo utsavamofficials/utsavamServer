@@ -28,7 +28,7 @@ export const collectionExecutiveService = {
 
     const currentCount = await collectionExecutiveRepository.countByOrganizer(input.eventOrganizerId);
     if (currentCount >= organizer.collectionExecutiveLimit) {
-      throw ApiError.forbidden(`Collection executive limit (${organizer.collectionExecutiveLimit}) reached`);
+      throw ApiError.forbidden(`Collection executive limit (${organizer.collectionExecutiveLimit}) reached, Contact to administrator for increasing limit.`);
     }
     // Verify full hierarchy: organizer -> event -> season, never trust client-supplied IDs blindly.
     await eventOrganizerService.assertBelongsToEvent(input.eventOrganizerId, input.seasonId);

@@ -4,9 +4,9 @@ import { idParamSchema, objectId, paginationQuerySchema } from './common.validat
 export const createExpenseCategorySchema = {
   body: Joi.object({
     seasonId: objectId.required(),
-    eventId: objectId.required(),
+    eventOrganizerId: objectId.required(),
     categoryName: Joi.string().required(),
-    allocatedBudget: Joi.number().positive().precision(2).optional(),
+    description: Joi.string().required(),
   }),
 };
 
@@ -14,11 +14,11 @@ export const updateExpenseCategorySchema = {
   params: idParamSchema,
   body: Joi.object({
     categoryName: Joi.string().optional(),
-    allocatedBudget: Joi.number().positive().precision(2).optional(),
+    description: Joi.string().optional(),
   }).min(1),
 };
 
 export const listExpenseCategorySchema = {
-  query: Joi.object({ ...paginationQuerySchema, seasonId: objectId.optional(), eventId: objectId.optional() }),
+  query: Joi.object({ ...paginationQuerySchema, seasonId: objectId.optional() }),
 };
 export const expenseCategoryIdParamSchema = { params: idParamSchema };

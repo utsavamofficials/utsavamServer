@@ -35,7 +35,6 @@ expenseCategoryRouter.use(requireAuth);
  */
 expenseCategoryRouter.post(
   '/',
-  requireRole(Role.SUPER_ADMIN, Role.AFFILIATE),
   validate(createExpenseCategorySchema),
   expenseCategoryController.create,
 );

@@ -5,12 +5,13 @@ import { IExpenseCategory } from '../models/expenseCategory.model';
 
 export interface CreateExpenseCategoryInput {
   seasonId: string;
-  eventId: string;
+  eventOrganizerId: string;
   categoryName: string;
+  description?: string;
   allocatedBudget?: number;
 }
 
-export type UpdateExpenseCategoryInput = Partial<Omit<CreateExpenseCategoryInput, 'seasonId' | 'eventId'>>;
+export type UpdateExpenseCategoryInput = Partial<Omit<CreateExpenseCategoryInput, 'seasonId' | 'eventOrganizerId'>>;
 
 export const expenseCategoryService = {
   async create(input: CreateExpenseCategoryInput): Promise<IExpenseCategory> {
@@ -19,10 +20,10 @@ export const expenseCategoryService = {
     );
   },
 
-  async list(pagination: ParsedPagination, filters: { seasonId?: string; eventId?: string }) {
+  async list(pagination: ParsedPagination, filters: { seasonId?: string; eventOrganizerId?: string }) {
     const filter: Record<string, unknown> = { ...excludeSoftDeleted<IExpenseCategory>() };
     if (filters.seasonId) filter.seasonId = filters.seasonId;
-    if (filters.eventId) filter.eventId = filters.eventId;
+    if (filters.eventOrganizerId) filter.eventOrganizerId = filters.eventOrganizerId;
     return expenseCategoryRepository.findMany(filter, pagination);
   },
 
