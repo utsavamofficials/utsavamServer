@@ -14,6 +14,7 @@ export const eventController = {
     const pagination = parsePagination(req.query);
     const { records, meta } = await eventService.list(pagination, {
       seasonId: req.query.seasonId as string | undefined,
+      eventOrganizerId: req.query.eventOrganizerId as string | undefined,
       search: req.query.search as string | undefined,
     });
     ApiResponse.paginated(res, records, meta);

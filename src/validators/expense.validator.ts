@@ -1,19 +1,18 @@
 import Joi from 'joi';
 import { gstinSchema, idParamSchema, objectId, paginationQuerySchema } from './common.validator';
-import { ExpenseApprovalStatus, ExpensePaymentMode, ExpensePaymentStatus } from '../constants/enums';
+import { ExpenseApprovalStatus, ExpensePaymentStatus } from '../constants/enums';// ExpensePaymentMode
 
 export const createExpenseSchema = {
   body: Joi.object({
     seasonId: objectId.required(),
-    eventId: objectId.required(),
     categoryId: objectId.required(),
     eventOrganizerId: objectId.required(),
     vendorName: Joi.string().allow('').optional(),
     vendorGstin: gstinSchema.optional(),
     amount: Joi.number().positive().precision(2).required(),
-    paymentMode: Joi.string().valid(...Object.values(ExpensePaymentMode)).required(),
+    // paymentMode: Joi.string().valid(...Object.values(ExpensePaymentMode)).required(),
     receiptUrls: Joi.array().items(Joi.string().uri()).optional(),
-    expenseDate: Joi.date().iso().required(),
+    expenseDate: Joi.date().iso().optional(),
   }),
 };
 
@@ -23,7 +22,7 @@ export const updateExpenseDraftSchema = {
     vendorName: Joi.string().allow('').optional(),
     vendorGstin: gstinSchema.optional(),
     amount: Joi.number().positive().precision(2).optional(),
-    paymentMode: Joi.string().valid(...Object.values(ExpensePaymentMode)).optional(),
+    // paymentMode: Joi.string().valid(...Object.values(ExpensePaymentMode)).optional(),
     receiptUrls: Joi.array().items(Joi.string().uri()).optional(),
     expenseDate: Joi.date().iso().optional(),
   }).min(1),

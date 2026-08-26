@@ -45,6 +45,7 @@ export const donorService = {
     return donorRepository.findMany(filter, pagination);
   },
 
+
   async getById(id: string): Promise<IDonor> {
     const donor = await donorRepository.findById(id);
     if (!donor) throw ApiError.notFound('Donor not found');

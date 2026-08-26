@@ -39,7 +39,8 @@ donorRouter.post(
   validate(createDonorSchema),
   donorController.create,
 );
-donorRouter.get('/', validate(listDonorSchema), donorController.list);
+donorRouter.get('/', validate(listDonorSchema), donorController.donorWithDonation);
+// donorRouter.get('/doner-donation', validate(listDonorSchema), donorController.donorWithDonation);
 
 /**
  * @openapi

@@ -14,7 +14,7 @@ export const expenseCategoryController = {
     const pagination = parsePagination(req.query);
     const { records, meta } = await expenseCategoryService.list(pagination, {
       seasonId: req.query.seasonId as string | undefined,
-      eventId: req.query.eventId as string | undefined,
+      eventOrganizerId: req.query.eventOrganizerId as string | undefined,
     });
     ApiResponse.paginated(res, records, meta);
   }),

@@ -8,6 +8,7 @@ import { IDonation } from "../models/donation.model";
 import { DonationPaymentMode, DonationStatus } from "../constants/enums";
 import { eventRepository } from "../repositories/event.repository";
 import { eventOrganizerRepository } from "../repositories/eventOrganizer.repository";
+import { IDonor } from "../models/donor.model";
 
 export interface CreateDonationInput {
   donorId: string;
@@ -281,6 +282,129 @@ export const donationService = {
     return {
       records: enrichedRecords,
       meta,
+    };
+  },
+
+  async donorWithDonation(
+    pagination: ParsedPagination,
+    filters: {
+      seasonId?: string;
+      eventId?: string;
+      collectionExecutiveId?: string;
+      contactNumber?: string;
+      search?: string;
+    },
+  ) {
+    // -----------------------------
+    // DONATION FILTER
+    // -----------------------------
+    const donationFilter: Record<string, unknown> = {
+      ...excludeSoftDeleted<IDonation>(),
+    };
+
+    if (filters.seasonId) {
+      donationFilter.seasonId = filters.seasonId;
+    }
+
+    if (filters.eventId) {
+      donationFilter.eventId = filters.eventId;
+    }
+
+    if (filters.collectionExecutiveId) {
+      donationFilter.collectionExecutiveId = filters.collectionExecutiveId;
+    }
+
+    // -----------------------------
+    // GET DONATIONS
+    // -----------------------------
+    const donationList = await donationRepository.findMany(
+      donationFilter,
+      pagination,
+    );
+
+    // -----------------------------
+    // GROUP DONATIONS BY DONOR
+    // -----------------------------
+    const donationSummary = new Map<
+      string,
+      {
+        totalDonationAmount: number;
+        donationCount: number;
+      }
+    >();
+
+    for (const donation of donationList.records) {
+      const donorId = donation.donorId.toString();
+
+      const existing = donationSummary.get(donorId);
+
+      const amount = Number(donation.donationAmount?.toString() ?? 0);
+
+      if (existing) {
+        existing.totalDonationAmount += amount;
+        existing.donationCount += 1;
+      } else {
+        donationSummary.set(donorId, {
+          totalDonationAmount: amount,
+          donationCount: 1,
+        });
+      }
+    }
+
+    // -----------------------------
+    // GET ONLY DONORS WHO DONATED
+    // -----------------------------
+    const donorIds = Array.from(donationSummary.keys());
+
+    const donorFilter: Record<string, unknown> = {
+      ...excludeSoftDeleted<IDonor>(),
+      _id: {
+        $in: donorIds,
+      },
+    };
+
+    // Optional donor filters
+    if (filters.contactNumber) {
+      donorFilter.contactNumber = filters.contactNumber;
+    }
+
+    if (filters.search) {
+      donorFilter.$or = [
+        {
+          donorName: {
+            $regex: filters.search,
+            $options: "i",
+          },
+        },
+        {
+          contactNumber: {
+            $regex: filters.search,
+            $options: "i",
+          },
+        },
+      ];
+    }
+
+    const donorList = await donorRepository.findMany(donorFilter, pagination);
+
+    // -----------------------------
+    // ATTACH DONATION SUMMARY
+    // -----------------------------
+    const records = donorList.records.map((donor) => {
+      const summary = donationSummary.get(donor._id.toString());
+
+      return {
+        ...donor.toObject(),
+
+        totalDonationAmount: summary?.totalDonationAmount ?? 0,
+
+        donationCount: summary?.donationCount ?? 0,
+      };
+    });
+
+    return {
+      records,
+      meta: donationList.meta,
     };
   },
 };

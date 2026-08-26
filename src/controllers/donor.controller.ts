@@ -3,6 +3,7 @@ import { asyncHandler } from '../utils/asyncHandler';
 import { ApiResponse } from '../utils/ApiResponse';
 import { parsePagination } from '../utils/queryBuilder';
 import { donorService } from '../services/donor.service';
+import { donationService } from '../services/donation.service';
 
 export const donorController = {
   create: asyncHandler(async (req: Request, res: Response) => {
@@ -19,6 +20,19 @@ export const donorController = {
       contactNumber: req.query.contactNumber as string | undefined,
       search: req.query.search as string | undefined,
     });
+    ApiResponse.paginated(res, records, meta);
+  }),
+
+  donorWithDonation: asyncHandler(async (req: Request, res: Response) => {
+    const pagination = parsePagination(req.query);
+
+    const { records, meta } =
+      await donationService.donorWithDonation(pagination, {
+        seasonId: req.query.seasonId as string | undefined,
+        eventOrganizerId: req.query.eventOrganizerId as string | undefined,
+        eventId: req.query.eventId as string | undefined,
+      });
+
     ApiResponse.paginated(res, records, meta);
   }),
 

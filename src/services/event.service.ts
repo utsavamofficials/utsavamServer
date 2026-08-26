@@ -62,10 +62,11 @@ export const eventService = {
 
   async list(
     pagination: ParsedPagination,
-    filters: { seasonId?: string; search?: string },
+    filters: { seasonId?: string; eventOrganizerId?: string; search?: string },
   ) {
     const filter: Record<string, unknown> = { ...excludeSoftDeleted<IEvent>() };
     if (filters.seasonId) filter.seasonId = filters.seasonId;
+    if (filters.eventOrganizerId) filter.eventOrganizerId = filters.eventOrganizerId;
     if (filters.search) {
       filter.$or = [
         { eventName: { $regex: filters.search, $options: "i" } },
