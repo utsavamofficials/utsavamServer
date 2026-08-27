@@ -42,7 +42,12 @@ export interface DonationFilterForEM {
 
 // Only these transitions are allowed — no arbitrary status jumps.
 const ALLOWED_TRANSITIONS: Record<DonationStatus, DonationStatus[]> = {
-  [DonationStatus.PENDING]: [DonationStatus.PROCESSING, DonationStatus.FAILED],
+  [DonationStatus.PENDING]: [
+    DonationStatus.PROCESSING,
+    DonationStatus.FAILED,
+    DonationStatus.COMPLETED,
+    DonationStatus.REFUNDED,
+  ],
   [DonationStatus.PROCESSING]: [
     DonationStatus.COMPLETED,
     DonationStatus.FAILED,

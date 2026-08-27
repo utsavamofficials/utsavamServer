@@ -10,6 +10,7 @@ import {
   ExpenseApprovalStatus,
   ExpensePaymentStatus,
 } from "../constants/enums";
+import { expenseCategoryRepository } from "../repositories/expenseCategory.repository";
 
 // ExpensePaymentMode,
 export interface CreateExpenseInput {
@@ -18,6 +19,8 @@ export interface CreateExpenseInput {
   categoryId: string;
   eventOrganizerId: string;
   vendorName?: string;
+  title?: string;
+  note?: string;
   vendorGstin?: string;
   amount: number;
   // paymentMode: ExpensePaymentMode;
@@ -26,10 +29,7 @@ export interface CreateExpenseInput {
 }
 
 export type UpdateExpenseDraftInput = Partial<
-  Omit<
-    CreateExpenseInput,
-    "seasonId" | "categoryId" | "eventOrganizerId"
-  >
+  Omit<CreateExpenseInput, "seasonId" | "categoryId" | "eventOrganizerId">
 >;
 
 export interface ExpenseFilters {
@@ -50,7 +50,6 @@ export const expenseService = {
       );
     }
 
-    // const expenseVoucherNumber = await generateReferenceNumber("EXP");
     return expenseRepository.create({
       ...input,
     } as unknown as Partial<IExpense>);
@@ -60,12 +59,33 @@ export const expenseService = {
     const filter: Record<string, unknown> = {
       ...excludeSoftDeleted<IExpense>(),
     };
+
     if (filters.seasonId) filter.seasonId = filters.seasonId;
     if (filters.eventId) filter.eventId = filters.eventId;
     if (filters.categoryId) filter.categoryId = filters.categoryId;
     if (filters.approvalStatus) filter.approvalStatus = filters.approvalStatus;
     if (filters.paymentStatus) filter.paymentStatus = filters.paymentStatus;
-    return expenseRepository.findMany(filter, pagination);
+
+    const result = await expenseRepository.findMany(filter, pagination);
+
+    const records = await Promise.all(
+      result.records.map(async (expense: IExpense) => {
+        const category = await expenseCategoryRepository.findOne(
+          expense.categoryId
+        );
+
+        return {
+          ...expense.toObject(),
+          categoryName: category?.categoryName ?? null,
+          amount: Number(expense.amount),
+        };
+      })
+    );
+
+    return {
+      ...result,
+      records,
+    };
   },
 
   async getById(id: string): Promise<IExpense> {

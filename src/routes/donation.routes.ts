@@ -1,9 +1,9 @@
-import { Router } from 'express';
-import { donationController } from '../controllers/donation.controller';
-import { requireAuth } from '../middleware/auth.middleware';
-import { requireActorType } from '../middleware/authorization.middleware';
-import { validate } from '../middleware/validation.middleware';
-import { ActorType } from '../constants/roles';
+import { Router } from "express";
+import { donationController } from "../controllers/donation.controller";
+import { requireAuth } from "../middleware/auth.middleware";
+import { requireActorType } from "../middleware/authorization.middleware";
+import { validate } from "../middleware/validation.middleware";
+import { ActorType } from "../constants/roles";
 import {
   createDonationSchema,
   donationEventIdParamSchema,
@@ -13,7 +13,7 @@ import {
   updateDonationSchema,
   updateDonationStatusSchema,
   donationFilterSchema,
-} from '../validators/donation.validator';
+} from "../validators/donation.validator";
 
 export const donationRouter = Router();
 
@@ -38,14 +38,12 @@ donationRouter.use(requireAuth);
  *         description: Paginated list of donations
  */
 donationRouter.post(
-  '/',
+  "/",
   requireActorType(ActorType.COLLECTION_EXECUTIVE, ActorType.USER),
   validate(createDonationSchema),
   donationController.create,
 );
-donationRouter.get('/', validate(listDonationSchema), donationController.list);
-
-
+donationRouter.get("/", validate(listDonationSchema), donationController.list);
 
 /**
  * @openapi
@@ -76,11 +74,10 @@ donationRouter.get('/', validate(listDonationSchema), donationController.list);
  *         description: Donations filtered successfully
  */
 donationRouter.get(
-  '/filter',
+  "/filter",
   validate(donationFilterSchema),
   donationController.filter,
 );
-
 
 /**
  * @openapi
@@ -94,7 +91,7 @@ donationRouter.get(
  *         description: Donation found
  */
 donationRouter.get(
-  '/receipt/:receiptNumber',
+  "/receipt/:receiptNumber",
   validate(receiptNumberParamSchema),
   donationController.getByReceiptNumber,
 );
@@ -110,7 +107,11 @@ donationRouter.get(
  *       200:
  *         description: Summary statistics
  */
-donationRouter.get('/summary/:eventId', validate(donationEventIdParamSchema), donationController.eventSummary);
+donationRouter.get(
+  "/summary/:eventId",
+  validate(donationEventIdParamSchema),
+  donationController.eventSummary,
+);
 
 /**
  * @openapi
@@ -130,9 +131,13 @@ donationRouter.get('/summary/:eventId', validate(donationEventIdParamSchema), do
  *       200:
  *         description: Donation updated
  */
-donationRouter.get('/:id', validate(donationIdParamSchema), donationController.getById);
+donationRouter.get(
+  "/:id",
+  validate(donationIdParamSchema),
+  donationController.getById,
+);
 donationRouter.patch(
-  '/:id',
+  "/:id",
   requireActorType(ActorType.COLLECTION_EXECUTIVE, ActorType.USER),
   validate(updateDonationSchema),
   donationController.update,
@@ -150,8 +155,12 @@ donationRouter.patch(
  *         description: Donation status updated
  */
 donationRouter.patch(
-  '/:id/status',
-  requireActorType(ActorType.COLLECTION_EXECUTIVE, ActorType.USER),
+  "/:id/status",
+  requireActorType(
+    ActorType.EVENT_ORGANIZER,
+    ActorType.COLLECTION_EXECUTIVE,
+    ActorType.USER,
+  ),
   validate(updateDonationStatusSchema),
   donationController.updateStatus,
 );

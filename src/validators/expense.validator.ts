@@ -8,6 +8,8 @@ export const createExpenseSchema = {
     categoryId: objectId.required(),
     eventOrganizerId: objectId.required(),
     vendorName: Joi.string().allow('').optional(),
+    title: Joi.string().allow('').optional(),
+    note: Joi.string().allow('').optional(),
     vendorGstin: gstinSchema.optional(),
     amount: Joi.number().positive().precision(2).required(),
     // paymentMode: Joi.string().valid(...Object.values(ExpensePaymentMode)).required(),
@@ -21,6 +23,8 @@ export const updateExpenseDraftSchema = {
   body: Joi.object({
     vendorName: Joi.string().allow('').optional(),
     vendorGstin: gstinSchema.optional(),
+    title: Joi.string().allow('').optional(),
+    note: Joi.string().allow('').optional(),
     amount: Joi.number().positive().precision(2).optional(),
     // paymentMode: Joi.string().valid(...Object.values(ExpensePaymentMode)).optional(),
     receiptUrls: Joi.array().items(Joi.string().uri()).optional(),

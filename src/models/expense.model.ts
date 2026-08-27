@@ -4,13 +4,14 @@ import { ExpenseApprovalStatus, ExpensePaymentStatus } from '../constants/enums'
 
 export interface IExpense extends Document {
   _id: Types.ObjectId;
-  expenseVoucherNumber: string;
   seasonId: Types.ObjectId;
   eventId: Types.ObjectId;
   categoryId: Types.ObjectId;
   eventOrganizerId: Types.ObjectId;
   vendorName?: string;
   vendorGstin?: string;
+  title?: string;
+  note?: string;
   amount: Schema.Types.Decimal128;
   // paymentMode: ExpensePaymentMode;
   // paymentStatus: ExpensePaymentStatus;
@@ -26,12 +27,12 @@ export interface IExpense extends Document {
 
 const expenseSchema = new Schema<IExpense>(
   {
-    // expenseVoucherNumber: { type: String, required: true, unique: true, trim: true },
     seasonId: { type: Schema.Types.ObjectId, ref: 'Season', required: true },
-    // eventId: { type: Schema.Types.ObjectId, ref: 'Event', required: true },
     categoryId: { type: Schema.Types.ObjectId, ref: 'ExpenseCategory', required: true },
     eventOrganizerId: { type: Schema.Types.ObjectId, ref: 'EventOrganizer', required: true },
     vendorName: { type: String, trim: true },
+    title: { type: String, trim: true },
+    note: { type: String, trim: true },
     vendorGstin: { type: String, trim: true, uppercase: true },
     amount: { type: Schema.Types.Decimal128, required: true },
     // paymentMode: { type: String, enum: Object.values(ExpensePaymentMode), required: true },

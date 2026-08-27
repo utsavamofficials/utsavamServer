@@ -6,9 +6,6 @@ class ExpenseRepository extends BaseRepository<IExpense> {
     super(ExpenseModel);
   }
 
-  async findByVoucherNumber(expenseVoucherNumber: string) {
-    return ExpenseModel.findOne({ expenseVoucherNumber, isDeleted: false }).exec();
-  }
 }
 
 export const expenseRepository = new ExpenseRepository();
