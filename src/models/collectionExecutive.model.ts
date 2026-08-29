@@ -23,7 +23,7 @@ export interface ICollectionExecutive extends Document {
 const collectionExecutiveSchema = new Schema<ICollectionExecutive>(
   {
     seasonId: { type: Schema.Types.ObjectId, ref: 'Season', required: true },
-    eventId: { type: Schema.Types.ObjectId, ref: 'Event', required: true },
+    eventId: { type: Schema.Types.ObjectId, ref: 'Event' },
     eventOrganizerId: { type: Schema.Types.ObjectId, ref: 'EventOrganizer', required: true },
     fullName: { type: String, required: true, trim: true },
     username: { type: String, required: true, unique: true, trim: true, lowercase: true },
