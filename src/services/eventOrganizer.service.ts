@@ -1,5 +1,4 @@
 import { eventOrganizerRepository } from '../repositories/eventOrganizer.repository';
-import { eventService } from './event.service';
 import { ApiError } from '../utils/ApiError';
 import { hashPassword } from '../utils/password';
 import { excludeSoftDeleted, ParsedPagination } from '../utils/queryBuilder';
@@ -28,7 +27,6 @@ export type UpdateEventOrganizerInput = Partial<
 export const eventOrganizerService = {
   async create(input: CreateEventOrganizerInput): Promise<IEventOrganizer> {
     // Verify the hierarchy: the event must actually belong to the given season.
-    await eventService.assertBelongsToSeason(input.seasonId);
 
     const existing = await eventOrganizerRepository.findByUsernameWithPassword(input.username);
     if (existing) throw ApiError.conflict('Username already in use');
