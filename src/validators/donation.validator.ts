@@ -6,7 +6,6 @@ export const createDonationSchema = {
   body: Joi.object({
     donorId: objectId.required(),
     seasonId: objectId.required(),
-    eventId: objectId.required(),
     collectionExecutiveId: objectId.required(),
     donationType: Joi.string().allow('').optional(),
     donationAmount: Joi.number().positive().precision(2).required(),

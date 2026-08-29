@@ -4,7 +4,6 @@ import { idParamSchema, objectId, panSchema, paginationQuerySchema, phoneSchema 
 export const createDonorSchema = {
   body: Joi.object({
     seasonId: objectId.required(),
-    eventId: objectId.required(),
     collectionExecutiveId: objectId.required(),
     donorName: Joi.string().required(),
     contactNumber: phoneSchema.required(),

@@ -22,7 +22,7 @@ export interface IDonor extends Document {
 const donorSchema = new Schema<IDonor>(
   {
     seasonId: { type: Schema.Types.ObjectId, ref: 'Season', required: true },
-    eventId: { type: Schema.Types.ObjectId, ref: 'Event', required: true },
+    eventId: { type: Schema.Types.ObjectId, ref: 'Event' },
     collectionExecutiveId: { type: Schema.Types.ObjectId, ref: 'CollectionExecutive', required: true },
     donorName: { type: String, required: true, trim: true },
     contactNumber: { type: String, trim: true },

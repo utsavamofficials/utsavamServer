@@ -1,5 +1,5 @@
-import { BaseRepository } from './base.repository';
-import { IUser, UserModel } from '../models/user.model';
+import { BaseRepository } from "./base.repository";
+import { IUser, UserModel } from "../models/user.model";
 
 class UserRepository extends BaseRepository<IUser> {
   constructor() {
@@ -7,15 +7,24 @@ class UserRepository extends BaseRepository<IUser> {
   }
 
   async findByUsernameWithPassword(username: string): Promise<IUser | null> {
-    return UserModel.findOne({ username: username.toLowerCase(), isDeleted: false })
-      .select('+passwordHash')
+    const user = await UserModel.findOne({
+      username: username.toLowerCase(),
+      isDeleted: false,
+    })
+      .select("+passwordHash")
       .exec();
+
+    return user;
   }
 
   async findByUsernameOrEmailOrPhone(value: string) {
     return UserModel.findOne({
       isDeleted: false,
-      $or: [{ username: value.toLowerCase() }, { email: value.toLowerCase() }, { contactNumber: value }],
+      $or: [
+        { username: value.toLowerCase() },
+        { email: value.toLowerCase() },
+        { contactNumber: value },
+      ],
     }).exec();
   }
 }

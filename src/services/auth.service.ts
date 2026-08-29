@@ -43,7 +43,7 @@ export async function loginAsUser(
   password: string,
 ): Promise<LoginResult | null> {
   const user = await userRepository.findByUsernameWithPassword(username);
-
+  console.log(user)
   if (!user || !user.isActive) {
     return null;
   }
@@ -103,7 +103,7 @@ async function loginAsEventOrganizer(
       actorType: ActorType.EVENT_ORGANIZER,
       fullName: organizer.fullName,
       seasonId: organizer.seasonId,
-      eventOrganizerId: organizer.id
+      eventOrganizerId: organizer.id,
     },
   };
 }
@@ -114,6 +114,7 @@ async function loginAsCollectionExecutive(
 ): Promise<LoginResult | null> {
   const executive =
     await collectionExecutiveRepository.findByUsernameWithPassword(username);
+  console.log(executive)
   if (!executive || !executive.isActive) return null;
 
   const valid = await comparePassword(password, executive.passwordHash);
@@ -123,7 +124,6 @@ async function loginAsCollectionExecutive(
     id: executive._id.toString(),
     actorType: ActorType.COLLECTION_EXECUTIVE,
     seasonId: executive.seasonId.toString(),
-    eventId: executive.eventId.toString(),
     eventOrganizerId: executive.eventOrganizerId.toString(),
   };
   return {
@@ -134,7 +134,6 @@ async function loginAsCollectionExecutive(
       actorType: ActorType.COLLECTION_EXECUTIVE,
       fullName: executive.fullName,
       seasonId: executive.seasonId,
-      eventId: executive.eventId,
     },
   };
 }

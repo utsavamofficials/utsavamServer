@@ -28,7 +28,7 @@ const donationSchema = new Schema<IDonation>(
     receiptNumber: { type: String, required: true, unique: true, trim: true },
     donorId: { type: Schema.Types.ObjectId, ref: 'Donor', required: true },
     seasonId: { type: Schema.Types.ObjectId, ref: 'Season', required: true },
-    eventId: { type: Schema.Types.ObjectId, ref: 'Event', required: true },
+    eventId: { type: Schema.Types.ObjectId, ref: 'Event' },
     collectionExecutiveId: { type: Schema.Types.ObjectId, ref: 'CollectionExecutive', required: true },
     donationType: { type: String, trim: true },
     donationAmount: { type: Schema.Types.Decimal128, required: true },

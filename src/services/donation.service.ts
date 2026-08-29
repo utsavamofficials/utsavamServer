@@ -61,13 +61,13 @@ export const donationService = {
   async create(input: CreateDonationInput): Promise<IDonation> {
     // Verify hierarchy: donor exists and executive genuinely owns this event.
     const donor = await donorRepository.findById(input.donorId);
-    if (!donor || donor.eventId.toString() !== input.eventId) {
+    if (!donor ) {
       throw ApiError.badRequest("Donor does not belong to the specified event");
     }
-    await collectionExecutiveService.assertBelongsToEvent(
-      input.collectionExecutiveId,
-      input.eventId,
-    );
+    // await collectionExecutiveService.assertBelongsToEvent(
+    //   input.collectionExecutiveId,
+    //   input.eventId,
+    // );
 
     const receiptNumber = await generateReferenceNumber("UTS");
 

@@ -23,7 +23,7 @@ export type UpdateDonorInput = Partial<
 export const donorService = {
   async create(input: CreateDonorInput): Promise<IDonor> {
     // Verify the executive genuinely belongs to this event before attaching a donor to them.
-    await collectionExecutiveService.assertBelongsToEvent(input.collectionExecutiveId, input.eventId);
+    // await collectionExecutiveService.assertBelongsToEvent(input.collectionExecutiveId, input.eventId);
     return donorRepository.create(input as unknown as Record<string, unknown>);
   },
 
