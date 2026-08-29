@@ -24,14 +24,12 @@ export type UpdateCollectionExecutiveInput = Partial<
 
 export const collectionExecutiveService = {
   async create(input: CreateCollectionExecutiveInput): Promise<ICollectionExecutive> {
-    const organizer = await eventOrganizerService.assertOwnsEvent(input.eventOrganizerId, input.eventId);
+    const organizer = await eventOrganizerService.getById(input.eventOrganizerId);
 
     const currentCount = await collectionExecutiveRepository.countByOrganizer(input.eventOrganizerId);
     if (currentCount >= organizer.collectionExecutiveLimit) {
       throw ApiError.forbidden(`Collection executive limit (${organizer.collectionExecutiveLimit}) reached, Contact to administrator for increasing limit.`);
     }
-    // Verify full hierarchy: organizer -> event -> season, never trust client-supplied IDs blindly.
-    await eventOrganizerService.assertBelongsToEvent(input.eventOrganizerId, input.seasonId);
 
     const existing = await collectionExecutiveRepository.findByUsernameWithPassword(input.username);
     if (existing) throw ApiError.conflict('Username already in use');

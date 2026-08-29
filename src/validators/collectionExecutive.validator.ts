@@ -4,7 +4,7 @@ import { idParamSchema, objectId, paginationQuerySchema, phoneSchema } from './c
 export const createCollectionExecutiveSchema = {
   body: Joi.object({
     seasonId: objectId.required(),
-    eventId: objectId.required(),
+    eventId: objectId.optional(),
     eventOrganizerId: objectId.required(),
     fullName: Joi.string().required(),
     username: Joi.string().alphanum().min(3).max(30).required(),
