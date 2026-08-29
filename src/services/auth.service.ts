@@ -11,26 +11,66 @@ import { collectionExecutiveRepository } from "../repositories/collectionExecuti
 import { ActorType } from "../constants/roles";
 import { JwtPayload, LoginResult } from "../types/auth.types";
 
-async function loginAsUser(
+// async function loginAsUser(
+//   username: string,
+//   password: string,
+// ): Promise<LoginResult | null> {
+//   const user = await userRepository.findByUsernameWithPassword(username);
+//   if (!user || !user.isActive) return null;
+
+//   const valid = await comparePassword(password, user.passwordHash);
+//   if (!valid) return null;
+
+//   const payload: JwtPayload = {
+//     id: user._id.toString(),
+//     actorType: ActorType.USER,
+//     role: user.role,
+//   };
+//   return {
+//     accessToken: signAccessToken(payload),
+//     refreshToken: signRefreshToken(payload),
+//     actor: {
+//       id: user._id.toString(),
+//       actorType: ActorType.USER,
+//       fullName: user.fullName,
+//       role: user.role,
+//     },
+//   };
+// }
+//
+export async function loginAsUser(
   username: string,
   password: string,
 ): Promise<LoginResult | null> {
   const user = await userRepository.findByUsernameWithPassword(username);
-  if (!user || !user.isActive) return null;
+
+  if (!user || !user.isActive) {
+    return null;
+  }
 
   const valid = await comparePassword(password, user.passwordHash);
-  if (!valid) return null;
+
+  if (!valid) {
+    return null;
+  }
+
+  const userId = user._id?.toString();
+
+  if (!userId) {
+    throw new Error("User ID is missing");
+  }
 
   const payload: JwtPayload = {
-    id: user._id.toString(),
+    id: userId,
     actorType: ActorType.USER,
     role: user.role,
   };
+
   return {
     accessToken: signAccessToken(payload),
     refreshToken: signRefreshToken(payload),
     actor: {
-      id: user._id.toString(),
+      id: userId,
       actorType: ActorType.USER,
       fullName: user.fullName,
       role: user.role,
