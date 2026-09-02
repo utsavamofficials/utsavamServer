@@ -29,21 +29,53 @@ export const donorService = {
 
   async list(
     pagination: ParsedPagination,
-    filters: { seasonId?: string; eventId?: string; collectionExecutiveId?: string; contactNumber?: string; search?: string },
+    filters: {
+      seasonId?: string;
+      eventId?: string;
+      collectionExecutiveId?: string;
+      contactNumber?: string;
+      search?: string;
+      eventOrganizerId?: string;
+    },
   ) {
-    const filter: Record<string, unknown> = { ...excludeSoftDeleted<IDonor>() };
+    const filter: Record<string, unknown> = {
+      ...excludeSoftDeleted<IDonor>(),
+    };
+
     if (filters.seasonId) filter.seasonId = filters.seasonId;
     if (filters.eventId) filter.eventId = filters.eventId;
-    if (filters.collectionExecutiveId) filter.collectionExecutiveId = filters.collectionExecutiveId;
-    if (filters.contactNumber) filter.contactNumber = filters.contactNumber;
+    if (filters.collectionExecutiveId) {
+      filter.collectionExecutiveId = filters.collectionExecutiveId;
+    }
+
+    if (filters.eventOrganizerId && filters.seasonId) {
+      const collectionExecutives =
+        await collectionExecutiveService.getBySeasonAndOrganizerId(
+          filters.eventOrganizerId,
+          filters.seasonId,
+        );
+
+      if (collectionExecutives.length > 0) {
+        filter.collectionExecutiveId = {
+          $in: collectionExecutives.map((executive) => executive.id),
+        };
+      }
+    }
+
+    if (filters.contactNumber) {
+      filter.contactNumber = filters.contactNumber;
+    }
+
     if (filters.search) {
       filter.$or = [
         { donorName: { $regex: filters.search, $options: 'i' } },
         { contactNumber: { $regex: filters.search, $options: 'i' } },
       ];
     }
+
     return donorRepository.findMany(filter, pagination);
   },
+
 
 
   async getById(id: string): Promise<IDonor> {

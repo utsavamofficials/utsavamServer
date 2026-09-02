@@ -24,6 +24,14 @@ class CollectionExecutiveRepository extends BaseRepository<ICollectionExecutive>
   async countByOrganizer(eventOrganizerId: string) {
     return CollectionExecutiveModel.countDocuments({ eventOrganizerId, isDeleted: false }).exec();
   }
+
+  async getBySeasonAndOrganizerId(EventOrganizerId: string, SeasonId: string){
+    return CollectionExecutiveModel.findMany({
+      eventOrganizerId,
+      SeasonId,
+      isDeleted: false,
+    }).exec();
+  }
 }
 
 export const collectionExecutiveRepository = new CollectionExecutiveRepository();

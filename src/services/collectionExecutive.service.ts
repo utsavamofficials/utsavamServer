@@ -65,6 +65,12 @@ export const collectionExecutiveService = {
     return executive;
   },
 
+  async getBySeasonAndOrganizerId(EventOrganizerId: string, SeasonId: string): Promise<ICollectionExecutive> {
+    const executive = await collectionExecutiveRepository.getBySeasonAndOrganizerId(EventOrganizerId, SeasonId);
+    if (!executive) throw ApiError.notFound('Collection executive not found');
+    return executive;
+  },
+
   async update(id: string, input: UpdateCollectionExecutiveInput): Promise<ICollectionExecutive> {
     const updated = await collectionExecutiveRepository.updateById(id, input);
     if (!updated) throw ApiError.notFound('Collection executive not found');
