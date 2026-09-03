@@ -10,6 +10,7 @@ import { eventOrganizerRepository } from "../repositories/eventOrganizer.reposit
 import { collectionExecutiveRepository } from "../repositories/collectionExecutive.repository";
 import { ActorType } from "../constants/roles";
 import { JwtPayload, LoginResult } from "../types/auth.types";
+import { eventRepository } from "../repositories/event.repository";
 
 // async function loginAsUser(
 //   username: string,
@@ -120,10 +121,15 @@ async function loginAsCollectionExecutive(
   const valid = await comparePassword(password, executive.passwordHash);
   if (!valid) return null;
 
+  const event = await eventRepository.findByEventOrganizerId(
+    executive.eventOrganizerId.toString()
+  );
+
   const payload: JwtPayload = {
     id: executive._id.toString(),
     actorType: ActorType.COLLECTION_EXECUTIVE,
     seasonId: executive.seasonId.toString(),
+    eventId: event?._id.toString(),
     eventOrganizerId: executive.eventOrganizerId.toString(),
   };
   return {

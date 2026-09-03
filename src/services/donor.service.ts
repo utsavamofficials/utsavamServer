@@ -49,16 +49,14 @@ export const donorService = {
     }
 
     if (filters.eventOrganizerId && filters.seasonId) {
-      const collectionExecutives =
+      const collectionExecutive =
         await collectionExecutiveService.getBySeasonAndOrganizerId(
           filters.eventOrganizerId,
           filters.seasonId,
         );
 
-      if (collectionExecutives.length > 0) {
-        filter.collectionExecutiveId = {
-          $in: collectionExecutives.map((executive) => executive.id),
-        };
+      if (collectionExecutive) {
+        filter.collectionExecutiveId = collectionExecutive.id;
       }
     }
 
